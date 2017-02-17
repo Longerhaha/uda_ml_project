@@ -15,7 +15,76 @@ class LearningAgent(Agent):
 
         # Set parameters of the learning agent
         self.learning = learning # Whether the agent is expected to learn
-        self.Q = dict()          # Create a Q-table which will be a dictionary of tuples
+        self.Q = dict({ 'state-1':{
+                    'right' : 7.00 ,
+                    'left'  : -9.00,
+                    'forward' : -1.00 ,
+                    None : -1.00 },
+                  'state-2':{
+                    'right' : -9.00 ,
+                    'left'  : 7.00,
+                    'forward' : 0.00 ,
+                    None : -1.00 },
+                  'state-3':{
+                    'right' : -1.50 ,
+                    'left'  : -1.50,
+                    'forward' : 5.00 ,
+                    None : -0.42 },
+                  'state-4':{
+                    'right' : -3.00 ,
+                    'left'  : -3.00,
+                    'forward' : -3.00 ,
+                    None : 5.00 },
+                  'state-5':{
+                    'right' : -3.00 ,
+                    'left'  : -3.00,
+                    'forward' : -3.00 ,
+                    None : 5.00 },
+                  'state-6':{
+                    'right' : -3.00 ,
+                    'left'  : -3.00,
+                    'forward' : -3.00 ,
+                    None : 5.00 },
+                  'state-7':{
+                    'right' : -3.00 ,
+                    'left'  : -3.00,
+                    'forward' : -3.00 ,
+                    None : 5.00 },
+                  'state-8':{
+                    'right' : -3.00 ,
+                    'left'  : -3.00,
+                    'forward' : -3.00 ,
+                    None : 5.00 },
+                  'state-9':{
+                    'right' : 7.00 ,
+                    'left'  : -9.00,
+                    'forward' : -1.00 ,
+                    None : -1.00 },
+                  'state-10':{
+                    'right' : -9.00 ,
+                    'left'  : 7.00,
+                    'forward' : 0.00 ,
+                    None : -1.00 },
+                  'state-11':{
+                    'right' : -1.50 ,
+                    'left'  : -1.50,
+                    'forward' : 5.00 ,
+                    None : -0.42 },
+                  'state-12':{
+                    'right' : 7.00 ,
+                    'left'  : -9.00,
+                    'forward' : -1.00 ,
+                    None : -1.00 },
+                  'state-13':{
+                    'right' : -9.00 ,
+                    'left'  : 7.00,
+                    'forward' : 0.00 ,
+                    None : -1.00 },
+                  'state-14':{
+                    'right' : -1.50 ,
+                    'left'  : -1.50,
+                    'forward' : 5.00 ,
+                    None : -0.42 } })          # Create a Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -39,7 +108,10 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-
+        self.epsilon = 1.00
+        if testing:
+            self.epsilon = 0
+            self.alpha = 0
         return None
 
     def build_state(self):
@@ -49,14 +121,27 @@ class LearningAgent(Agent):
 
         # Collect data about the environment
         waypoint = self.planner.next_waypoint() # The next waypoint 
+        print 'waypoint is %s'%waypoint
         inputs = self.env.sense(self)           # Visual input - intersection light and traffic
+        print 'light is %s'%inputs['light']
+        print 'left car direction is %s'%inputs['left']
+        print 'right car direction is %s'%inputs['right']
+        print 'oncoming car direction is %s'%inputs['oncoming']
         deadline = self.env.get_deadline(self)  # Remaining deadline
-
+        print 'deadline is %d'%deadline
         ########### 
         ## TO DO ##
         ###########
-        # Set 'state' as a tuple of relevant data for the agent        
-        state = None
+        # Set 'state' as a tuple of relevant data for the agent 
+        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
+        is_red_light = inputs['light'] == 'red'
+        is_car_in_ThreeDir = (inputs['left']== None and inputs['right']== None and inputs['oncoming']== None)
+        Dir_Ori_To_Des = waypoint
+        Remain_act_num = deadline
+        left_car_dir = inputs['left']
+        right_car_dir = inputs['right']
+        oncoming_car_dir = inputs['oncoming']
+        state=(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
 
         return state
 
@@ -69,8 +154,8 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
-
-        maxQ = None
+        
+        maxQ = max(self.Q[state])
 
         return maxQ 
 
@@ -159,7 +244,7 @@ def run():
     # Follow the driving agent
     # Flags:
     #   enforce_deadline - set to True to enforce a deadline metric
-    env.set_primary_agent(agent,enforce_deadline=True)
+    env.set_primary_agent(agent)#,enforce_deadline=True)
 
     ##############
     # Create the simulation
@@ -168,14 +253,14 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env,update_delay=0.01,log_metrics=True)
+    sim = Simulator(env)#,update_delay=0.01,log_metrics=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
+    sim.run()#n_test=10)
 
 
 if __name__ == '__main__':
