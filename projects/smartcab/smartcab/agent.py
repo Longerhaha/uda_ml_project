@@ -15,7 +15,7 @@ class LearningAgent(Agent):
 
         # Set parameters of the learning agent
         self.learning = learning # Whether the agent is expected to learn
-        self.Q = dict({(False,None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
+        self.Q = dict({(False,None,None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -24,8 +24,8 @@ class LearningAgent(Agent):
         ###########
         # Set any additional class parameters as needed
         #self.epsilon_old = 1.00
-        self.random_value = 0
-        self.state_old = tuple([False,None,None,None])
+        
+        self.state_old = tuple([False,None,None,None,None])
         #self.state_old = tuple([False,False,None,None,None,None])
         self.action_old = None
         self.reward_old = 0.0
@@ -73,12 +73,13 @@ class LearningAgent(Agent):
         #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
         is_red_light = inputs['light'] == 'red'
         #is_car_in_ThreeDir = (inputs['left']== None and inputs['right']== None and inputs['oncoming']== None)
-        #Dir_Ori_To_Des = waypoint
+        Dir_Ori_To_Des = waypoint
         #Remain_act_num = deadline
         left_car_dir = inputs['left']
         right_car_dir = inputs['right']
         oncoming_car_dir = inputs['oncoming']
-        state = (is_red_light,left_car_dir,right_car_dir,oncoming_car_dir) 
+        state = (is_red_light,Dir_Ori_To_Des,left_car_dir,right_car_dir,oncoming_car_dir) 
+        #(is_red_light,left_car_dir,right_car_dir,oncoming_car_dir) 
         #(is_red_light,is_car_in_ThreeDir,left_car_dir,right_car_dir,oncoming_car_dir) 
         #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,left_car_dir,right_car_dir,oncoming_car_dir) 
         #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir)
@@ -136,12 +137,14 @@ class LearningAgent(Agent):
         if not self.learning:
             action = random.choice([None, 'forward', 'left', 'right'])
         else:
-            self.random_value = random.randint(1,100)
-            print 'epsilon_value ',int(self.epsilon * 100),'random_value ',self.random_value
-            if self.random_value <= int(self.epsilon * 100):
+            #self.random_value = random.randint(1,100)
+            #print 'epsilon_value ',int(self.epsilon * 100),'random_value ',self.random_value
+            if random.random() <= self.epsilon:
                 action = random.choice([None, 'forward', 'left', 'right'])
+                #print 'random_action'
             else:
                 action = max(self.Q[state].keys()) 
+                #print 'max_Q_action'
         return action
 
 
