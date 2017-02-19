@@ -8,83 +8,14 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
 
         # Set parameters of the learning agent
         self.learning = learning # Whether the agent is expected to learn
-        self.Q = dict({ 'state-1':{
-                    'right' : 7.00 ,
-                    'left'  : -9.00,
-                    'forward' : -1.00 ,
-                    None : -1.00 },
-                  'state-2':{
-                    'right' : -9.00 ,
-                    'left'  : 7.00,
-                    'forward' : 0.00 ,
-                    None : -1.00 },
-                  'state-3':{
-                    'right' : -1.50 ,
-                    'left'  : -1.50,
-                    'forward' : 5.00 ,
-                    None : -0.42 },
-                  'state-4':{
-                    'right' : -3.00 ,
-                    'left'  : -3.00,
-                    'forward' : -3.00 ,
-                    None : 5.00 },
-                  'state-5':{
-                    'right' : -3.00 ,
-                    'left'  : -3.00,
-                    'forward' : -3.00 ,
-                    None : 5.00 },
-                  'state-6':{
-                    'right' : -3.00 ,
-                    'left'  : -3.00,
-                    'forward' : -3.00 ,
-                    None : 5.00 },
-                  'state-7':{
-                    'right' : -3.00 ,
-                    'left'  : -3.00,
-                    'forward' : -3.00 ,
-                    None : 5.00 },
-                  'state-8':{
-                    'right' : -3.00 ,
-                    'left'  : -3.00,
-                    'forward' : -3.00 ,
-                    None : 5.00 },
-                  'state-9':{
-                    'right' : 7.00 ,
-                    'left'  : -9.00,
-                    'forward' : -1.00 ,
-                    None : -1.00 },
-                  'state-10':{
-                    'right' : -9.00 ,
-                    'left'  : 7.00,
-                    'forward' : 0.00 ,
-                    None : -1.00 },
-                  'state-11':{
-                    'right' : -1.50 ,
-                    'left'  : -1.50,
-                    'forward' : 5.00 ,
-                    None : -0.42 },
-                  'state-12':{
-                    'right' : 7.00 ,
-                    'left'  : -9.00,
-                    'forward' : -1.00 ,
-                    None : -1.00 },
-                  'state-13':{
-                    'right' : -9.00 ,
-                    'left'  : 7.00,
-                    'forward' : 0.00 ,
-                    None : -1.00 },
-                  'state-14':{
-                    'right' : -1.50 ,
-                    'left'  : -1.50,
-                    'forward' : 5.00 ,
-                    None : -0.42 } })          # Create a Q-table which will be a dictionary of tuples
+        self.Q = dict({(False,None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -92,8 +23,12 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-
-
+        #self.epsilon_old = 1.00
+        self.random_value = 0
+        self.state_old = tuple([False,None,None,None])
+        #self.state_old = tuple([False,False,None,None,None,None])
+        self.action_old = None
+        self.reward_old = 0.0
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -108,7 +43,9 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        self.epsilon = 1.00
+        #self.epsilon = self.epsilon_old-0.05
+        #self.epsilon_old = self.epsilon
+        self.epsilon = self.epsilon - 0.05
         if testing:
             self.epsilon = 0
             self.alpha = 0
@@ -135,14 +72,18 @@ class LearningAgent(Agent):
         # Set 'state' as a tuple of relevant data for the agent 
         #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
         is_red_light = inputs['light'] == 'red'
-        is_car_in_ThreeDir = (inputs['left']== None and inputs['right']== None and inputs['oncoming']== None)
-        Dir_Ori_To_Des = waypoint
-        Remain_act_num = deadline
+        #is_car_in_ThreeDir = (inputs['left']== None and inputs['right']== None and inputs['oncoming']== None)
+        #Dir_Ori_To_Des = waypoint
+        #Remain_act_num = deadline
         left_car_dir = inputs['left']
         right_car_dir = inputs['right']
         oncoming_car_dir = inputs['oncoming']
-        state=(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
-
+        state = (is_red_light,left_car_dir,right_car_dir,oncoming_car_dir) 
+        #(is_red_light,is_car_in_ThreeDir,left_car_dir,right_car_dir,oncoming_car_dir) 
+        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,left_car_dir,right_car_dir,oncoming_car_dir) 
+        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir)
+        print 'now state is ',state
+        
         return state
 
 
@@ -155,8 +96,8 @@ class LearningAgent(Agent):
         ###########
         # Calculate the maximum Q-value of all actions for a given state
         
-        maxQ = max(self.Q[state])
-
+        maxQ = max(self.Q[state].itervalues())
+        #print maxQ
         return maxQ 
 
 
@@ -169,7 +110,11 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
-
+        if self.learning:
+            if not(state in self.Q):
+                self.Q.setdefault(state,dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0}))
+            else:
+                pass 
         return
 
 
@@ -180,7 +125,7 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-        action = random.choice([None, 'forward', 'left', 'right'])
+        
 
         ########### 
         ## TO DO ##
@@ -188,7 +133,15 @@ class LearningAgent(Agent):
         # When not learning, choose a random action
         # When learning, choose a random action with 'epsilon' probability
         #   Otherwise, choose an action with the highest Q-value for the current state
- 
+        if not self.learning:
+            action = random.choice([None, 'forward', 'left', 'right'])
+        else:
+            self.random_value = random.randint(1,100)
+            print 'epsilon_value ',int(self.epsilon * 100),'random_value ',self.random_value
+            if self.random_value <= int(self.epsilon * 100):
+                action = random.choice([None, 'forward', 'left', 'right'])
+            else:
+                action = max(self.Q[state].keys()) 
         return action
 
 
@@ -202,7 +155,9 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-
+        if self.learning:
+            self.Q[self.state_old][self.action_old] = round( (1-self.alpha) * self.Q[self.state_old][self.action_old] + self.alpha * (self.reward_old + self.get_maxQ(state)) ,3)
+            
         return
 
 
@@ -214,9 +169,12 @@ class LearningAgent(Agent):
         state = self.build_state()          # Get current state
         self.createQ(state)                 # Create 'state' in Q-table
         action = self.choose_action(state)  # Choose an action
-        reward = self.env.act(self, action) # Receive a reward
+        reward = self.env.act(self, action) # Receive a reward 
         self.learn(state, action, reward)   # Q-learn
-
+        self.state_old = state #keep state of last step
+        self.action_old = action#keep action of last step
+        self.reward_old = reward   #keep reward of last step
+        #print self.Q
         return
         
 
@@ -244,7 +202,7 @@ def run():
     # Follow the driving agent
     # Flags:
     #   enforce_deadline - set to True to enforce a deadline metric
-    env.set_primary_agent(agent)#,enforce_deadline=True)
+    env.set_primary_agent(agent,enforce_deadline=True)
 
     ##############
     # Create the simulation
@@ -253,14 +211,14 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env)#,update_delay=0.01,log_metrics=True)
+    sim = Simulator(env,update_delay=0.01,log_metrics=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run()#n_test=10)
+    sim.run(n_test=10)
 
 
 if __name__ == '__main__':
