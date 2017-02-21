@@ -8,14 +8,15 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.3):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
 
         # Set parameters of the learning agent
         self.learning = learning # Whether the agent is expected to learn
-        self.Q = dict({(False,None,None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
+        #self.Q = dict({('green','left','RightCar_allow_move','LeftCar_allow_move','OncomingCar_allow_move'):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
+        self.Q = dict({('ergent_degree_1','green','left',True,True,True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -23,12 +24,13 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-        #self.epsilon_old = 1.00
         
-        self.state_old = tuple([False,None,None,None,None])
-        #self.state_old = tuple([False,False,None,None,None,None])
-        self.action_old = None
-        self.reward_old = 0.0
+        #self.state_old = tuple(['green','left','RightCar_allow_move','LeftCar_allow_move','OncomingCar_allow_move'])
+        self.state_old = tuple(['ergent_degree_1','green','left',True,True,True])
+        self.action_old = 'left'
+        self.reward_old = 4.0
+        self.decrese_rate_1 = 0.97
+        #self.decrese_rate_2 = 0.94
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -43,14 +45,27 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        #self.epsilon = self.epsilon_old-0.05
-        #self.epsilon_old = self.epsilon
-        self.epsilon = self.epsilon - 0.05
+        #self.epsilon = self.epsilon-0.05
+        #self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_1)
+        
+        '''
+        if self.epsilon >= 0.6:
+            self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_1)
+            self.alpha = 0.1
+        elif self.epsilon >= 0.03:
+            self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_2)
+            self.alpha = 0.5
+        else:
+            self.epsilon = self.epsilon-0.001
+            self.alpha = 0.9'''
         if testing:
             self.epsilon = 0
-            self.alpha = 0
+            self.alpha = 0 
+        else:
+            self.epsilon = self.epsilon*self.decrese_rate_1
+            
         return None
-
+       
     def build_state(self):
         """ The build_state function is called when the agent requests data from the 
             environment. The next waypoint, the intersection inputs, and the deadline 
@@ -58,32 +73,52 @@ class LearningAgent(Agent):
 
         # Collect data about the environment
         waypoint = self.planner.next_waypoint() # The next waypoint 
-        print 'waypoint is %s'%waypoint
+        #print 'waypoint is %s'%waypoint
         inputs = self.env.sense(self)           # Visual input - intersection light and traffic
-        print 'light is %s'%inputs['light']
-        print 'left car direction is %s'%inputs['left']
-        print 'right car direction is %s'%inputs['right']
-        print 'oncoming car direction is %s'%inputs['oncoming']
         deadline = self.env.get_deadline(self)  # Remaining deadline
-        print 'deadline is %d'%deadline
+        #print 'deadline is %d'%deadline
         ########### 
         ## TO DO ##
         ###########
         # Set 'state' as a tuple of relevant data for the agent 
-        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir) 
-        is_red_light = inputs['light'] == 'red'
-        #is_car_in_ThreeDir = (inputs['left']== None and inputs['right']== None and inputs['oncoming']== None)
-        Dir_Ori_To_Des = waypoint
-        #Remain_act_num = deadline
-        left_car_dir = inputs['left']
-        right_car_dir = inputs['right']
-        oncoming_car_dir = inputs['oncoming']
-        state = (is_red_light,Dir_Ori_To_Des,left_car_dir,right_car_dir,oncoming_car_dir) 
-        #(is_red_light,left_car_dir,right_car_dir,oncoming_car_dir) 
-        #(is_red_light,is_car_in_ThreeDir,left_car_dir,right_car_dir,oncoming_car_dir) 
-        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,left_car_dir,right_car_dir,oncoming_car_dir) 
-        #(is_red_light,is_car_in_ThreeDir,Dir_Ori_To_Des,Remain_act_num,left_car_dir,right_car_dir,oncoming_car_dir)
-        print 'now state is ',state
+        
+        #state = (inputs['light'],waypoint,inputs['right'],inputs['left'],inputs['oncoming'])
+        '''
+        if deadline >= 14:
+            reach_des_ergent_degree = 'ergent_degree_1'
+        elif deadline >= 6:
+            reach_des_ergent_degree = 'ergent_degree_2'
+        else:
+            reach_des_ergent_degree = 'ergent_degree_3'
+        '''  
+        if deadline >= 12:
+            reach_des_ergent_degree = 'ergent_degree_1'
+        else:
+            reach_des_ergent_degree = 'ergent_degree_2'
+          
+        if waypoint == 'forward':
+            allow_left = True
+            allow_right = True
+            if inputs['right'] == 'forward' or inputs['left'] == 'forward':
+                allow_forward = False
+            else:
+                allow_forward = True
+        elif waypoint == 'left':
+            allow_forward = True
+            allow_right = True
+            if inputs['right'] == 'forward' or inputs['left'] == 'forward' or inputs['oncoming'] == 'forward' or inputs['oncoming'] == 'right':
+                allow_left = False
+            else:
+                allow_left = True
+        else:
+            allow_forward = True
+            allow_left = True
+            if inputs['left'] == 'forward':
+                allow_right = False
+            else:
+                allow_right = True
+        
+        state = (reach_des_ergent_degree,inputs['light'],waypoint,allow_forward,allow_left,allow_right)
         
         return state
 
@@ -98,7 +133,6 @@ class LearningAgent(Agent):
         # Calculate the maximum Q-value of all actions for a given state
         
         maxQ = max(self.Q[state].itervalues())
-        #print maxQ
         return maxQ 
 
 
@@ -143,7 +177,13 @@ class LearningAgent(Agent):
                 action = random.choice([None, 'forward', 'left', 'right'])
                 #print 'random_action'
             else:
-                action = max(self.Q[state].keys()) 
+                bestaction = []
+                max_val = self.get_maxQ(state)
+                for key in self.Q[state].keys():
+                    if self.Q[state][key] == max_val:
+                        bestaction.append(key) 
+                
+                action = random.choice(bestaction)
                 #print 'max_Q_action'
         return action
 
@@ -174,9 +214,9 @@ class LearningAgent(Agent):
         action = self.choose_action(state)  # Choose an action
         reward = self.env.act(self, action) # Receive a reward 
         self.learn(state, action, reward)   # Q-learn
-        self.state_old = state #keep state of last step
-        self.action_old = action#keep action of last step
-        self.reward_old = reward   #keep reward of last step
+        self.state_old = state   # keep state of last step
+        self.action_old = action  # keep action of last step
+        self.reward_old = reward  # keep reward of last step
         #print self.Q
         return
         
@@ -214,15 +254,15 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env,update_delay=0.01,log_metrics=True)
+    sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=10)
-
-
+    sim.run(n_test=50,tolerance=0.005)
+    # cd C:\Users\Administrator\Desktop\git-learn\machine-learning\projects\smartcab
+    # python ./smartcab/agent.py
 if __name__ == '__main__':
     run()

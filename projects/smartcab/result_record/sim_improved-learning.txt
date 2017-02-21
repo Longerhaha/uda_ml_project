@@ -1,0 +1,148 @@
+/-----------------------------------------
+| State-action rewards from Q-Learning
+\-----------------------------------------
+
+('ergent_degree_2', 'red', 'right', True, True, False)
+ -- forward : -19.34
+ -- right : -11.89
+ -- None : 6.95
+ -- left : 0.00
+
+('ergent_degree_2', 'red', 'forward', True, True, True)
+ -- forward : -3.70
+ -- right : 3.32
+ -- None : 43.91
+ -- left : -11.26
+
+('ergent_degree_2', 'red', 'forward', False, True, True)
+ -- forward : -12.02
+ -- right : -6.26
+ -- None : 26.33
+ -- left : 0.00
+
+('ergent_degree_2', 'green', 'right', True, True, False)
+ -- forward : 1.93
+ -- right : 24.39
+ -- None : -1.76
+ -- left : 0.00
+
+('ergent_degree_1', 'green', 'left', True, False, True)
+ -- forward : 10.47
+ -- right : 53.04
+ -- None : 7.69
+ -- left : -3.17
+
+('ergent_degree_1', 'green', 'right', True, True, False)
+ -- forward : 1.96
+ -- right : 49.95
+ -- None : 0.83
+ -- left : 0.00
+
+('ergent_degree_2', 'green', 'left', True, True, True)
+ -- forward : 3.45
+ -- right : 2.77
+ -- None : -1.01
+ -- left : 39.01
+
+('ergent_degree_1', 'red', 'forward', False, True, True)
+ -- forward : -17.15
+ -- right : 8.67
+ -- None : 58.37
+ -- left : -22.56
+
+('ergent_degree_1', 'green', 'right', True, True, True)
+ -- forward : 5.99
+ -- right : 54.84
+ -- None : 6.54
+ -- left : 8.61
+
+('ergent_degree_2', 'green', 'left', True, False, True)
+ -- forward : 26.77
+ -- right : 10.29
+ -- None : 0.23
+ -- left : -7.08
+
+('ergent_degree_1', 'red', 'forward', True, True, True)
+ -- forward : 15.80
+ -- right : 26.72
+ -- None : 58.31
+ -- left : 23.70
+
+('ergent_degree_1', 'red', 'right', True, True, False)
+ -- forward : -8.89
+ -- right : -4.61
+ -- None : 49.11
+ -- left : 0.00
+
+('ergent_degree_1', 'red', 'left', True, False, True)
+ -- forward : -11.36
+ -- right : 3.19
+ -- None : 54.59
+ -- left : -3.17
+
+('ergent_degree_1', 'green', 'left', True, True, True)
+ -- forward : 11.84
+ -- right : 13.49
+ -- None : 17.67
+ -- left : 56.65
+
+('ergent_degree_1', 'red', 'left', True, True, True)
+ -- forward : -0.12
+ -- right : 21.69
+ -- None : 50.04
+ -- left : 0.34
+
+('ergent_degree_1', 'green', 'forward', False, True, True)
+ -- forward : 55.07
+ -- right : 6.14
+ -- None : 3.21
+ -- left : 1.01
+
+('ergent_degree_1', 'red', 'right', True, True, True)
+ -- forward : -4.19
+ -- right : 54.47
+ -- None : 16.57
+ -- left : -5.16
+
+('ergent_degree_1', 'green', 'forward', True, True, True)
+ -- forward : 56.04
+ -- right : 14.97
+ -- None : 10.85
+ -- left : 17.56
+
+('ergent_degree_2', 'red', 'left', True, True, True)
+ -- forward : -5.54
+ -- right : 7.52
+ -- None : 32.60
+ -- left : -3.47
+
+('ergent_degree_2', 'red', 'left', True, False, True)
+ -- forward : -7.48
+ -- right : 1.10
+ -- None : 30.31
+ -- left : -20.57
+
+('ergent_degree_2', 'red', 'right', True, True, True)
+ -- forward : -16.37
+ -- right : 7.76
+ -- None : 19.86
+ -- left : -4.52
+
+('ergent_degree_2', 'green', 'forward', True, True, True)
+ -- forward : 43.00
+ -- right : 7.52
+ -- None : 2.00
+ -- left : 2.28
+
+('ergent_degree_2', 'green', 'right', True, True, True)
+ -- forward : 1.19
+ -- right : 37.98
+ -- None : 0.92
+ -- left : 3.50
+
+('ergent_degree_2', 'green', 'forward', False, True, True)
+ -- forward : 43.73
+ -- right : 6.58
+ -- None : 0.00
+ -- left : 2.60
+
