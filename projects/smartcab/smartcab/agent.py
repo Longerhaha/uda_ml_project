@@ -8,7 +8,7 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.2):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -17,7 +17,8 @@ class LearningAgent(Agent):
         self.learning = learning # Whether the agent is expected to learn
 
         #self.Q = dict({('green','left',None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
-        self.Q = dict({('green','left',True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
+        #self.Q = dict({('green','left',True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
+        self.Q = dict({('green','left',None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -28,7 +29,8 @@ class LearningAgent(Agent):
         
        
         #self.state_old = tuple(['green','left',None,None,None])
-        self.state_old = tuple(['green','left',True])
+        #self.state_old = tuple(['green','left',True])
+        self.state_old = tuple(['green','left',None])
         self.action_old = 'left'
         self.reward_old = 4.0
         
@@ -77,6 +79,7 @@ class LearningAgent(Agent):
         # Set 'state' as a tuple of relevant data for the agent 
         
         #state = (inputs['light'],waypoint,inputs['right'],inputs['left'],inputs['oncoming'])
+        '''
         if waypoint == 'forward':
             if inputs['right'] == 'forward' or inputs['left'] == 'forward':
                 allow_flag = False
@@ -92,9 +95,10 @@ class LearningAgent(Agent):
                 allow_flag = False
             else:
                 allow_flag = True
+        '''
         #state = (reach_des_ergent_degree,inputs['light'],waypoint,allow_forward,allow_left,allow_right)
-        #state = (inputs['light'],waypoint,inputs['oncoming'])
-        state = (inputs['light'],waypoint,allow_flag)
+        state = (inputs['light'],waypoint,inputs['oncoming'])
+        #state = (inputs['light'],waypoint,allow_flag)
         return state
 
 
@@ -228,8 +232,8 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    #sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
-    sim = Simulator(env,update_delay=0.01,display=False,log_metrics=True)
+    sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
+    #sim = Simulator(env,update_delay=0.01,log_metrics=True)
     ##############
     # Run the simulator
     # Flags:
@@ -237,7 +241,6 @@ def run():
     #   n_test     - discrete number of testing trials to perform, default is 0
     sim.run(n_test=50,tolerance=0.006)
     #sim.run(n_test=10)
-    #sim.run(n_test=10,tolerance=0.006)
     # cd C:\Users\Administrator\Desktop\git-learn\machine-learning\projects\smartcab
     # python ./smartcab/agent.py
 if __name__ == '__main__':
