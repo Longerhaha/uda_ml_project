@@ -3,146 +3,146 @@
 \-----------------------------------------
 
 ('ergent_degree_2', 'red', 'right', True, True, False)
- -- forward : -19.34
- -- right : -11.89
- -- None : 6.95
+ -- forward : -10.90
+ -- right : -5.50
+ -- None : 14.44
  -- left : 0.00
 
 ('ergent_degree_2', 'red', 'forward', True, True, True)
- -- forward : -3.70
- -- right : 3.32
- -- None : 43.91
- -- left : -11.26
-
-('ergent_degree_2', 'red', 'forward', False, True, True)
- -- forward : -12.02
- -- right : -6.26
- -- None : 26.33
- -- left : 0.00
-
-('ergent_degree_2', 'green', 'right', True, True, False)
- -- forward : 1.93
- -- right : 24.39
- -- None : -1.76
- -- left : 0.00
-
-('ergent_degree_1', 'green', 'left', True, False, True)
- -- forward : 10.47
- -- right : 53.04
- -- None : 7.69
- -- left : -3.17
+ -- forward : -3.09
+ -- right : 2.07
+ -- None : 37.65
+ -- left : -3.31
 
 ('ergent_degree_1', 'green', 'right', True, True, False)
- -- forward : 1.96
- -- right : 49.95
- -- None : 0.83
- -- left : 0.00
+ -- forward : 0.00
+ -- right : 56.23
+ -- None : 0.50
+ -- left : 1.46
+
+('ergent_degree_2', 'green', 'right', True, True, False)
+ -- forward : 18.82
+ -- right : 1.02
+ -- None : -1.66
+ -- left : 0.12
+
+('ergent_degree_1', 'green', 'left', True, False, True)
+ -- forward : 4.94
+ -- right : 56.01
+ -- None : -2.32
+ -- left : -0.80
 
 ('ergent_degree_2', 'green', 'left', True, True, True)
- -- forward : 3.45
- -- right : 2.77
- -- None : -1.01
- -- left : 39.01
+ -- forward : 7.15
+ -- right : 2.36
+ -- None : 4.20
+ -- left : 38.03
 
 ('ergent_degree_1', 'red', 'forward', False, True, True)
- -- forward : -17.15
- -- right : 8.67
- -- None : 58.37
- -- left : -22.56
+ -- forward : -30.57
+ -- right : -4.10
+ -- None : 59.00
+ -- left : -23.74
 
 ('ergent_degree_1', 'green', 'right', True, True, True)
- -- forward : 5.99
- -- right : 54.84
- -- None : 6.54
- -- left : 8.61
+ -- forward : 10.94
+ -- right : 58.69
+ -- None : 15.69
+ -- left : 2.03
 
 ('ergent_degree_2', 'green', 'left', True, False, True)
- -- forward : 26.77
- -- right : 10.29
- -- None : 0.23
- -- left : -7.08
+ -- forward : 5.20
+ -- right : 19.12
+ -- None : 0.40
+ -- left : -6.71
 
 ('ergent_degree_1', 'red', 'forward', True, True, True)
- -- forward : 15.80
- -- right : 26.72
- -- None : 58.31
- -- left : 23.70
+ -- forward : 22.67
+ -- right : 27.24
+ -- None : 56.61
+ -- left : 25.58
 
 ('ergent_degree_1', 'red', 'right', True, True, False)
- -- forward : -8.89
- -- right : -4.61
- -- None : 49.11
+ -- forward : -23.84
+ -- right : -12.06
+ -- None : 36.43
  -- left : 0.00
 
 ('ergent_degree_1', 'red', 'left', True, False, True)
- -- forward : -11.36
- -- right : 3.19
- -- None : 54.59
- -- left : -3.17
+ -- forward : -21.02
+ -- right : 5.05
+ -- None : 58.01
+ -- left : -31.00
 
 ('ergent_degree_1', 'green', 'left', True, True, True)
- -- forward : 11.84
- -- right : 13.49
- -- None : 17.67
- -- left : 56.65
+ -- forward : 11.80
+ -- right : 13.73
+ -- None : 3.92
+ -- left : 60.08
 
 ('ergent_degree_1', 'red', 'left', True, True, True)
- -- forward : -0.12
- -- right : 21.69
- -- None : 50.04
- -- left : 0.34
+ -- forward : -0.71
+ -- right : 16.88
+ -- None : 60.00
+ -- left : 3.98
 
 ('ergent_degree_1', 'green', 'forward', False, True, True)
- -- forward : 55.07
- -- right : 6.14
- -- None : 3.21
- -- left : 1.01
+ -- forward : 60.10
+ -- right : 10.56
+ -- None : 8.51
+ -- left : 2.89
 
 ('ergent_degree_1', 'red', 'right', True, True, True)
- -- forward : -4.19
- -- right : 54.47
- -- None : 16.57
- -- left : -5.16
+ -- forward : -7.91
+ -- right : 52.88
+ -- None : 16.06
+ -- left : -4.64
 
 ('ergent_degree_1', 'green', 'forward', True, True, True)
- -- forward : 56.04
- -- right : 14.97
- -- None : 10.85
- -- left : 17.56
+ -- forward : 57.48
+ -- right : 18.83
+ -- None : 17.85
+ -- left : 10.12
 
-('ergent_degree_2', 'red', 'left', True, True, True)
- -- forward : -5.54
- -- right : 7.52
- -- None : 32.60
- -- left : -3.47
+('ergent_degree_2', 'red', 'forward', False, True, True)
+ -- forward : -29.23
+ -- right : -8.31
+ -- None : 18.05
+ -- left : -10.57
 
 ('ergent_degree_2', 'red', 'left', True, False, True)
- -- forward : -7.48
- -- right : 1.10
- -- None : 30.31
- -- left : -20.57
+ -- forward : -22.93
+ -- right : -2.03
+ -- None : 12.39
+ -- left : -14.91
+
+('ergent_degree_2', 'red', 'left', True, True, True)
+ -- forward : -5.73
+ -- right : 4.99
+ -- None : 29.04
+ -- left : -3.15
 
 ('ergent_degree_2', 'red', 'right', True, True, True)
- -- forward : -16.37
- -- right : 7.76
- -- None : 19.86
- -- left : -4.52
+ -- forward : -10.24
+ -- right : 25.09
+ -- None : 1.29
+ -- left : -6.21
 
 ('ergent_degree_2', 'green', 'forward', True, True, True)
- -- forward : 43.00
- -- right : 7.52
- -- None : 2.00
- -- left : 2.28
+ -- forward : 50.20
+ -- right : 6.79
+ -- None : 1.43
+ -- left : 2.87
 
 ('ergent_degree_2', 'green', 'right', True, True, True)
- -- forward : 1.19
- -- right : 37.98
- -- None : 0.92
- -- left : 3.50
+ -- forward : 1.59
+ -- right : 28.92
+ -- None : -0.25
+ -- left : -0.17
 
 ('ergent_degree_2', 'green', 'forward', False, True, True)
- -- forward : 43.73
- -- right : 6.58
+ -- forward : 40.55
+ -- right : 0.37
  -- None : 0.00
- -- left : 2.60
+ -- left : 2.57
 
