@@ -8,15 +8,16 @@ class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.
         This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.3):
+    def __init__(self, env, learning=True, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
 
         # Set parameters of the learning agent
         self.learning = learning # Whether the agent is expected to learn
-        #self.Q = dict({('green','left','RightCar_allow_move','LeftCar_allow_move','OncomingCar_allow_move'):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
-        self.Q = dict({('ergent_degree_1','green','left',True,True,True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
+
+        #self.Q = dict({('green','left',None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
+        self.Q = dict({('green','left',True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -25,12 +26,14 @@ class LearningAgent(Agent):
         ###########
         # Set any additional class parameters as needed
         
-        #self.state_old = tuple(['green','left','RightCar_allow_move','LeftCar_allow_move','OncomingCar_allow_move'])
-        self.state_old = tuple(['ergent_degree_1','green','left',True,True,True])
+       
+        #self.state_old = tuple(['green','left',None,None,None])
+        self.state_old = tuple(['green','left',True])
         self.action_old = 'left'
         self.reward_old = 4.0
-        self.decrese_rate_1 = 0.97
-        #self.decrese_rate_2 = 0.94
+        
+        self.decrese_rate_1 = 0.95
+
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
             'testing' is set to True if testing trials are being used
@@ -48,22 +51,13 @@ class LearningAgent(Agent):
         #self.epsilon = self.epsilon-0.05
         #self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_1)
         
-        '''
-        if self.epsilon >= 0.6:
-            self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_1)
-            self.alpha = 0.1
-        elif self.epsilon >= 0.03:
-            self.epsilon = self.epsilon*math.exp(-1*self.decrese_rate_2)
-            self.alpha = 0.5
-        else:
-            self.epsilon = self.epsilon-0.001
-            self.alpha = 0.9'''
         if testing:
             self.epsilon = 0
             self.alpha = 0 
         else:
             self.epsilon = self.epsilon*self.decrese_rate_1
-            
+            #self.epsilon = self.epsilon-0.05
+
         return None
        
     def build_state(self):
@@ -83,43 +77,24 @@ class LearningAgent(Agent):
         # Set 'state' as a tuple of relevant data for the agent 
         
         #state = (inputs['light'],waypoint,inputs['right'],inputs['left'],inputs['oncoming'])
-        '''
-        if deadline >= 14:
-            reach_des_ergent_degree = 'ergent_degree_1'
-        elif deadline >= 6:
-            reach_des_ergent_degree = 'ergent_degree_2'
-        else:
-            reach_des_ergent_degree = 'ergent_degree_3'
-        '''  
-        if deadline >= 12:
-            reach_des_ergent_degree = 'ergent_degree_1'
-        else:
-            reach_des_ergent_degree = 'ergent_degree_2'
-          
         if waypoint == 'forward':
-            allow_left = True
-            allow_right = True
             if inputs['right'] == 'forward' or inputs['left'] == 'forward':
-                allow_forward = False
+                allow_flag = False
             else:
-                allow_forward = True
+                allow_flag = True
         elif waypoint == 'left':
-            allow_forward = True
-            allow_right = True
             if inputs['right'] == 'forward' or inputs['left'] == 'forward' or inputs['oncoming'] == 'forward' or inputs['oncoming'] == 'right':
-                allow_left = False
+                allow_flag = False
             else:
-                allow_left = True
+                allow_flag = True
         else:
-            allow_forward = True
-            allow_left = True
             if inputs['left'] == 'forward':
-                allow_right = False
+                allow_flag = False
             else:
-                allow_right = True
-        
-        state = (reach_des_ergent_degree,inputs['light'],waypoint,allow_forward,allow_left,allow_right)
-        
+                allow_flag = True
+        #state = (reach_des_ergent_degree,inputs['light'],waypoint,allow_forward,allow_left,allow_right)
+        #state = (inputs['light'],waypoint,inputs['oncoming'])
+        state = (inputs['light'],waypoint,allow_flag)
         return state
 
 
@@ -199,8 +174,7 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
-            self.Q[self.state_old][self.action_old] = round( (1-self.alpha) * self.Q[self.state_old][self.action_old] + self.alpha * (self.reward_old + self.get_maxQ(state)) ,3)
-            
+            self.Q[self.state_old][self.action_old] = round( (1-self.alpha) * self.Q[self.state_old][self.action_old] + self.alpha * (self.reward_old + 0*self.get_maxQ(state)) ,3)   
         return
 
 
@@ -254,14 +228,16 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
-    
+    #sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
+    sim = Simulator(env,update_delay=0.01,display=False,log_metrics=True)
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=50,tolerance=0.005)
+    sim.run(n_test=50,tolerance=0.006)
+    #sim.run(n_test=10)
+    #sim.run(n_test=10,tolerance=0.006)
     # cd C:\Users\Administrator\Desktop\git-learn\machine-learning\projects\smartcab
     # python ./smartcab/agent.py
 if __name__ == '__main__':
