@@ -18,7 +18,9 @@ class LearningAgent(Agent):
 
         #self.Q = dict({('green','left',None,None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})# Create a initial Q-table which will be a dictionary of tuples
         #self.Q = dict({('green','left',True):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
-        self.Q = dict({('green','left',None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
+        #self.Q = dict({('green','left',None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})#good trade-off to reduce the state space in exchange of a faster-learning agent
+        #self.Q = dict({('green','left',None,None):dict({None:0.0,'right':0.0,'left':0.0,'forward':0.0})})
+        self.Q = dict()
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
@@ -28,13 +30,13 @@ class LearningAgent(Agent):
         # Set any additional class parameters as needed
         
        
-        #self.state_old = tuple(['green','left',None,None,None])
+        #self.state_old = tuple(['green','left',None])
         #self.state_old = tuple(['green','left',True])
-        self.state_old = tuple(['green','left',None])
-        self.action_old = 'left'
-        self.reward_old = 4.0
+        #self.state_old = tuple(['green','left',None,None])
+        #self.action_old = 'left'
+        #self.reward_old = 4.0
         
-        self.decrese_rate_1 = 0.95
+        self.decrese_rate_1 = 0.98
 
     def reset(self, destination=None, testing=False):
         """ The reset function is called at the beginning of each trial.
@@ -95,10 +97,11 @@ class LearningAgent(Agent):
                 allow_flag = False
             else:
                 allow_flag = True
-        '''
-        #state = (reach_des_ergent_degree,inputs['light'],waypoint,allow_forward,allow_left,allow_right)
-        state = (inputs['light'],waypoint,inputs['oncoming'])
-        #state = (inputs['light'],waypoint,allow_flag)
+        '''#should't manipulate the rule
+        
+        #state = (inputs['light'],waypoint,inputs['oncoming'])   #good trade-off to reduce the state space in exchange of a faster-learning agent
+        state = (inputs['light'],waypoint,inputs['left'],inputs['oncoming'])  #optimal policy
+        #state = (inputs['light'],waypoint,allow_flag)  #should't manipulate the rule
         return state
 
 
@@ -178,7 +181,8 @@ class LearningAgent(Agent):
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
         if self.learning:
-            self.Q[self.state_old][self.action_old] = round( (1-self.alpha) * self.Q[self.state_old][self.action_old] + self.alpha * (self.reward_old + 0*self.get_maxQ(state)) ,3)   
+            self.Q[state][action] = round( (1-self.alpha) * self.Q[state][action] + self.alpha * reward ,3)
+                                                                                                        
         return
 
 
@@ -192,9 +196,9 @@ class LearningAgent(Agent):
         action = self.choose_action(state)  # Choose an action
         reward = self.env.act(self, action) # Receive a reward 
         self.learn(state, action, reward)   # Q-learn
-        self.state_old = state   # keep state of last step
-        self.action_old = action  # keep action of last step
-        self.reward_old = reward  # keep reward of last step
+        #self.state_old = state   # keep state of last step
+        #self.action_old = action  # keep action of last step
+        #self.reward_old = reward  # keep reward of last step
         #print self.Q
         return
         
@@ -232,7 +236,7 @@ def run():
     #   display      - set to False to disable the GUI if PyGame is enabled
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env,update_delay=0.001,log_metrics=True,optimized=True)
+    sim = Simulator(env,update_delay=0.01,log_metrics=True,display=False,optimized=True)
     #sim = Simulator(env,update_delay=0.01,log_metrics=True)
     ##############
     # Run the simulator
